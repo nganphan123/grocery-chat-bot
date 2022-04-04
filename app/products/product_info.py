@@ -46,7 +46,6 @@ class ProductInfoHandler(BaseHandler):
 
         return self.handle_product_info(None, **request)
 
-    @DeprecationWarning
     def handle_product_info(self, message=None, **kwargs) -> str:
         # kwargs are arguments such as product_name, price, operators (<. >)
         # This really depends on how you define your parser

@@ -37,9 +37,6 @@ class BaseHandler:
         # Set the operation mode (i.e. DEV or PRODUCTION)
         self.runtime_mode = os.getenv("PYTHON_ENV", "DEV")
 
-        # Create pattern matches
-        self.create_match_paterns()
-
         # Initialize a mock database if development environment
         if self.runtime_mode == "DEV":
             self.db = Database.instance()
@@ -55,6 +52,7 @@ class BaseHandler:
         if self.db:
             self.db.close()
 
+    @DeprecationWarning
     @abstractmethod
     def create_match_paterns(self) -> None:
         """
@@ -83,6 +81,7 @@ class BaseHandler:
         """
         pass
 
+    @DeprecationWarning
     @abstractmethod
     def parse(self, message: str) -> dict:
         """

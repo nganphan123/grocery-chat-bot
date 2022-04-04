@@ -25,7 +25,7 @@ MOCK_PRODUCT_DATA = [
 
 STORE_INFO = {
     "name": "Walmart",
-    "address": "123 Main St",
+    "address": "123 Main Street, Toronto, ON, Canada",
     "city": "Toronto",
     "province": "ON",
     "postal_code": "M5V 2K7",

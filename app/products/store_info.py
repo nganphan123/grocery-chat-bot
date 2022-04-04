@@ -10,6 +10,7 @@ class StoreInfoHandler(BaseHandler):
 
     def __init__(self) -> None:
         super().__init__()
+        self.create_match_paterns()
 
     def dispose(self):
         super().dispose()

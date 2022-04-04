@@ -72,19 +72,32 @@ class Bot:
             # Set the undetected intent count to 0
             elif("product" in intent):# intent can be product-stock or product-nutrition or product-price
                 productName = response.parameters["product-name"]
-                print("Bot: " + self.route_to_handler(productName = productName, intent = intent))
+                if("product-info" not in self.intents):
+                    self.intents["product-info"] = ProductInfoHandler()
+                response = self.intents["product-info"].handle(productName, intent)
+                print("Bot: " + response)
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks about store, 
             # pass to store-info in route_to_handle. 
             # Set the undetected intent count to 0
             elif(intent == "store-info"):
-                print("Bot: " + self.route_to_handler(intent = intent, user_input = user_input))
+                if("store-info" not in self.intents):
+                    self.intents["store-info"] = StoreInfoHandler()
+                response = self.intents["store-info"].handle(user_input)
+                print("Bot: " + response)
                 self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks for exchange or refund or feedback, 
             # direct to other concerns handler in route_to_handle
             elif(intent == "exchange-request" or intent == "refund-request" or intent == "feedback"):
-                    self.route_to_handler(sentimentScore = response.sentiment_analysis_result.query_text_sentiment.score, intent = intent)
+                    sentimentScore = response.sentiment_analysis_result.query_text_sentiment.score
+                    if("other-concerns" not in self.intents):     
+                        self.intents["other-concerns"] = OtherConcerns() 
+                    self.intents["other-concerns"].handle(sentimentScore, intent)
                     self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
+            # if user asks for directions to store
+            elif(intent == "access-request"):
+                print("Bot: " + self.route_to_handler(intent = intent))
+                self.undetected_intent_count = 0
             # if the bot doesn't understand the user intent, 
             # then ask for rephrase and increment the undetected intent count
             # if the bot doesn't understand the user intent for 3 times,
@@ -92,7 +105,9 @@ class Bot:
             else:    
                 self.undetected_intent_count += 1
                 if(self.undetected_intent_count == 3):
-                    self.route_to_handler(sentimentScore = 0, intent = intent)
+                    if("other-concerns" not in self.intents):     
+                        self.intents["other-concerns"] = OtherConcerns() 
+                    self.intents["other-concerns"].handle(0, intent)
                     self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
                 else:
                     print("Bot: " + response.fulfillment_text)
@@ -123,36 +138,3 @@ class Bot:
             return response.query_result
         except:
             raise Exception("Dialogflow API error")
-
-    #Based on intent, route to appropriate handler and return response for user input.
-    def route_to_handler(self, **kwargs):
-        """
-        Takes intent name and necessary parameters and routes to appropriate handler.
-        Handlers include: product-info, store-info, other-concerns.
-
-        Parameters:
-            intent: name of intent
-            productName: name of product. Only required if intent is about product
-            user_input: user input. Only required if intent is about store
-        
-        Returns: text response from handlers
-        """
-        #If the question is about (detected intent) product info, direct it to the product information handler. Handler returns a response to user question. 
-        #If the intent is not currently handled by the bot, create a new intent for it.
-        if("product" in kwargs["intent"]):
-            if("product-info" not in self.intents):
-                self.intents["product-info"] = ProductInfoHandler()
-            response = self.intents["product-info"].handle(kwargs["productName"], kwargs["intent"])
-
-        #If the question is about (detected intent) product info, direct it to the product information handler. Handler returns a response to user question. 
-        elif("store" in kwargs["intent"]):
-            if("store-info" not in self.intents):
-                self.intents["store-info"] = StoreInfoHandler()
-            response = self.intents["store-info"].handle(kwargs["user_input"])
-
-        #If intent cannot be detected or customer has further concerns, direct it to the other concerns handler. Handler returns a response to user question.
-        else:
-            if("other-concerns" not in self.intents):     
-                self.intents["other-concerns"] = OtherConcerns() 
-            response = self.intents["other-concerns"].handle(kwargs["sentimentScore"], kwargs["intent"])
-        return response
