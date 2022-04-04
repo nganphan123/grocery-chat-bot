@@ -1,4 +1,5 @@
 from google.cloud import dialogflow
+from app.products.access_info import AccessHandler
 from app.products.product_info import *
 from app.products.store_info import *
 from app.concerns.other_concern import *
@@ -96,7 +97,9 @@ class Bot:
                     self.undetected_intent_count = 0 # reset the undetected intent count if bot already responded the intent
             # if user asks for directions to store
             elif(intent == "access-request"):
-                print("Bot: " + self.route_to_handler(intent = intent))
+                if("access-request" not in self.intents):     
+                        self.intents["access-request"] = AccessHandler()
+                self.intents["access-request"].handle()
                 self.undetected_intent_count = 0
             # if the bot doesn't understand the user intent, 
             # then ask for rephrase and increment the undetected intent count
