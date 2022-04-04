@@ -11,16 +11,23 @@ class ProductInfoHandler(BaseHandler):
     def __init__(self) -> None:
         super().__init__()
 
-    def create_match_paterns(self):
-        # Product-related patterns
-        self.price_pattern = re.compile(
-            r"(price|cost|how much|money)", re.IGNORECASE)
-        self.stock_pattern = re.compile(r"(stock|how many|amount)", re.IGNORECASE)
-        self.nutrition_pattern = re.compile(
-            r"(calories|protein|carbs|carbohydrates|sugar|fat|nutrition|nutritional|weight|health|healthy)", re.IGNORECASE)
-
     def dispose(self):
         super().dispose()
+    
+    def handle(self, message: str, intent=None) -> str: # if 2 args => message = product_name
+        if intent is not None:
+            return self.handle_prod_intent(message, intent)
+
+        # Call parser
+        kwargs = self.parse(message=message)
+
+        # If there is a topic detected, we find the response
+        # By calling the handler with the message (for convenience) and its necessary arguments
+        response = None
+        if kwargs:
+            response = self.handle_product_info(message, **kwargs)
+
+            return response
 
     def handle_prod_intent(self, product: str, intent: str) -> str:
         
@@ -39,45 +46,7 @@ class ProductInfoHandler(BaseHandler):
 
         return self.handle_product_info(None, **request)
 
-    def handle(self, message: str, intent=None) -> str: # if 2 args => message = product_name
-        if intent is not None:
-            return self.handle_prod_intent(message, intent)
-
-        # Call parser
-        kwargs = self.parse(message=message)
-
-        # If there is a topic detected, we find the response
-        # By calling the handler with the message (for convenience) and its necessary arguments
-        response = None
-        if kwargs:
-            response = self.handle_product_info(message, **kwargs)
-
-            return response
-
-    def parse(self, message: str) -> dict:
-        request = None
-
-        # Check for keywords for prices
-        if self.nutrition_pattern.search(message):
-            request = "nutrition"
-        elif self.price_pattern.search(message):
-            request = "price"
-        elif self.stock_pattern.search(message):
-            request = "stock"
-
-        # If the request is truly about product
-        if request:
-            id = None
-            for prod in MOCK_PRODUCT_DATA:
-                prod_name = prod["name"]
-                prod_id = prod["id"]
-                prod_names = prod["names"]
-
-                if prod_name in message or prod_id in message or prod_names in message:
-                    id = prod["id"]
-
-        return {"request": request, "id": id} if request else None
-
+    @DeprecationWarning
     def handle_product_info(self, message=None, **kwargs) -> str:
         # kwargs are arguments such as product_name, price, operators (<. >)
         # This really depends on how you define your parser
@@ -106,3 +75,37 @@ class ProductInfoHandler(BaseHandler):
                 product['name'].capitalize(), product['calories'], product['protein'], product['carbs'], product['sugar'], product['fat'])
 
         return reply
+
+    @DeprecationWarning
+    def create_match_paterns(self):
+        # Product-related patterns
+        self.price_pattern = re.compile(
+            r"(price|cost|how much|money)", re.IGNORECASE)
+        self.stock_pattern = re.compile(r"(stock|how many|amount)", re.IGNORECASE)
+        self.nutrition_pattern = re.compile(
+            r"(calories|protein|carbs|carbohydrates|sugar|fat|nutrition|nutritional|weight|health|healthy)", re.IGNORECASE)
+
+    @DeprecationWarning
+    def parse(self, message: str) -> dict:
+        request = None
+
+        # Check for keywords for prices
+        if self.nutrition_pattern.search(message):
+            request = "nutrition"
+        elif self.price_pattern.search(message):
+            request = "price"
+        elif self.stock_pattern.search(message):
+            request = "stock"
+
+        # If the request is truly about product
+        if request:
+            id = None
+            for prod in MOCK_PRODUCT_DATA:
+                prod_name = prod["name"]
+                prod_id = prod["id"]
+                prod_names = prod["names"]
+
+                if prod_name in message or prod_id in message or prod_names in message:
+                    id = prod["id"]
+
+        return {"request": request, "id": id} if request else None            

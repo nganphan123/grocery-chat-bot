@@ -11,21 +11,6 @@ class StoreInfoHandler(BaseHandler):
     def __init__(self) -> None:
         super().__init__()
 
-    def create_match_paterns(self):
-        # Store-related patterns
-        self.name_pattern = re.compile(
-            r"(name)", re.IGNORECASE)
-        self.location_pattern = re.compile(
-            r"(where|location|address|street)", re.IGNORECASE)
-        self.opening_pattern = re.compile(
-            r"(when|open|close|opening|closing|hours)", re.IGNORECASE)
-        self.phone_pattern = re.compile(r"(phone|number)", re.IGNORECASE)
-        self.website_pattern = re.compile(r"(website|url|web)", re.IGNORECASE)
-        self.city_pattern = re.compile(r"(city|town)", re.IGNORECASE)
-        self.province_pattern = re.compile(r"(province|state)", re.IGNORECASE)
-        self.country_pattern = re.compile(r"(country)", re.IGNORECASE)
-        self.postal_code_pattern = re.compile(r"(postal|zip)", re.IGNORECASE)
-
     def dispose(self):
         super().dispose()
 
@@ -70,3 +55,18 @@ class StoreInfoHandler(BaseHandler):
         # This really depends on how you define your parser
         reply = "It is {}".format(STORE_INFO[kwargs["request"]])
         return reply
+    
+    def create_match_paterns(self):
+        # Store-related patterns
+        self.name_pattern = re.compile(
+            r"(name)", re.IGNORECASE)
+        self.location_pattern = re.compile(
+            r"(where|location|address|street)", re.IGNORECASE)
+        self.opening_pattern = re.compile(
+            r"(when|open|close|opening|closing|hours)", re.IGNORECASE)
+        self.phone_pattern = re.compile(r"(phone|number)", re.IGNORECASE)
+        self.website_pattern = re.compile(r"(website|url|web)", re.IGNORECASE)
+        self.city_pattern = re.compile(r"(city|town)", re.IGNORECASE)
+        self.province_pattern = re.compile(r"(province|state)", re.IGNORECASE)
+        self.country_pattern = re.compile(r"(country)", re.IGNORECASE)
+        self.postal_code_pattern = re.compile(r"(postal|zip)", re.IGNORECASE)

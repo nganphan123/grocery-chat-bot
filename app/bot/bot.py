@@ -21,7 +21,7 @@ class Bot:
         undetected_intent_count: keep track of times the intent is not detected
     """
     def __init__(self):
-        project_id = "grocery-chat-bot"
+        project_id = "shell-store"
         #generate unique session id for each conversation. 
         # Session id is for continuation of conversation
         #TODO: create unique number
