@@ -1,41 +1,18 @@
-from app.database import MOCK_PRODUCT_DATA
-import re
-from app.products.base_handler import BaseHandler
+from app.database import Database
 
+def handle_prod_info(product: str, intent=None) -> str:
+    if intent is not None:
 
-class ProductInfoHandler(BaseHandler):
-    """
-    A class used to represent a mini-bot to handle product queries.
-    """
+        # Connect database
+        db = Database.instance()
+        db.connect()  # Start a connection
+        db.init_database()  # Initialize the database
 
-    def __init__(self) -> None:
-        super().__init__()
-
-    def dispose(self):
-        super().dispose()
-    
-    def handle(self, message: str, intent=None) -> str: # if 2 args => message = product_name
-        if intent is not None:
-            return self.handle_prod_intent(message, intent)
-
-        # Call parser
-        kwargs = self.parse(message=message)
-
-        # If there is a topic detected, we find the response
-        # By calling the handler with the message (for convenience) and its necessary arguments
-        response = None
-        if kwargs:
-            response = self.handle_product_info(message, **kwargs)
-
-            return response
-
-    def handle_prod_intent(self, product: str, intent: str) -> str:
-        
         intent = intent.split("-")[1] # hardcoded to filter intent: product-<intent> Ex. product-price -> intent = price
 
         request = None
 
-        cursor = self.db.execute_query(
+        cursor = db.execute_query(
             "SELECT product.id FROM product WHERE product.name = ? OR product.names = ?", 
                 params=tuple([product, product]))
         data = cursor.fetchone()
@@ -44,67 +21,33 @@ class ProductInfoHandler(BaseHandler):
         
         request = {"request": intent, "id": data[0]}
 
-        return self.handle_product_info(None, **request)
+        return fetch_info(db, **request)
 
-    def handle_product_info(self, message=None, **kwargs) -> str:
-        # kwargs are arguments such as product_name, price, operators (<. >)
-        # This really depends on how you define your parser
-        prod_id = kwargs["id"]
+def fetch_info(db, **kwargs) -> str:
+    # kwargs are arguments such as product_name, price, operators (<. >)
+    # This really depends on how you define your parser
+    prod_id = kwargs["id"]
 
-        # Get the product information
-        products = self.db.get_product("id", prod_id)
+    # Get the product information
+    products = db.get_product("id", prod_id)
 
-        # Since id is unique, we can assume there is only one product
-        product = products[0]
+    # Since id is unique, we can assume there is only one product
+    product = products[0]
 
-        reply = None
+    reply = None
 
-        prod_msg_type = kwargs.get("request")
-        if prod_msg_type == "price":
-            reply = "%s cost $%s %s." % (
-                product['names'].capitalize(), product['price'], product['price_scale'])
-        elif prod_msg_type == "stock":
-            if product['in_stock']:
-                reply = "%s are in stock." % (product['names'].capitalize())
-            else:
-                reply = "%s are out of stock." % (
-                    product['names'].capitalize())
-        elif prod_msg_type == "nutrition":
-            reply = "%s Nutrition Facts: Calories = %s, Protein = %s, Carbs = %s, Sugar = %s, Fat = %s." % (
-                product['name'].capitalize(), product['calories'], product['protein'], product['carbs'], product['sugar'], product['fat'])
+    prod_msg_type = kwargs.get("request")
+    if prod_msg_type == "price":
+        reply = "%s cost $%s %s." % (
+            product['names'].capitalize(), product['price'], product['price_scale'])
+    elif prod_msg_type == "stock":
+        if product['in_stock']:
+            reply = "%s are in stock." % (product['names'].capitalize())
+        else:
+            reply = "%s are out of stock." % (
+                product['names'].capitalize())
+    elif prod_msg_type == "nutrition":
+        reply = "%s Nutrition Facts: Calories = %s, Protein = %s, Carbs = %s, Sugar = %s, Fat = %s." % (
+            product['name'].capitalize(), product['calories'], product['protein'], product['carbs'], product['sugar'], product['fat'])
 
-        return reply
-
-    @DeprecationWarning
-    def create_match_paterns(self):
-        # Product-related patterns
-        self.price_pattern = re.compile(
-            r"(price|cost|how much|money)", re.IGNORECASE)
-        self.stock_pattern = re.compile(r"(stock|how many|amount)", re.IGNORECASE)
-        self.nutrition_pattern = re.compile(
-            r"(calories|protein|carbs|carbohydrates|sugar|fat|nutrition|nutritional|weight|health|healthy)", re.IGNORECASE)
-
-    @DeprecationWarning
-    def parse(self, message: str) -> dict:
-        request = None
-
-        # Check for keywords for prices
-        if self.nutrition_pattern.search(message):
-            request = "nutrition"
-        elif self.price_pattern.search(message):
-            request = "price"
-        elif self.stock_pattern.search(message):
-            request = "stock"
-
-        # If the request is truly about product
-        if request:
-            id = None
-            for prod in MOCK_PRODUCT_DATA:
-                prod_name = prod["name"]
-                prod_id = prod["id"]
-                prod_names = prod["names"]
-
-                if prod_name in message or prod_id in message or prod_names in message:
-                    id = prod["id"]
-
-        return {"request": request, "id": id} if request else None            
+    return reply       

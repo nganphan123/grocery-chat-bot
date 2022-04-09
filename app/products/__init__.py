@@ -1,5 +1,6 @@
 from .product_info import (
-    ProductInfoHandler,
+    # ProductInfoHandler,
+    handle_prod_info
 )
 from .store_info import (
     StoreInfoHandler,
