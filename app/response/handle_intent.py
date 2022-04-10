@@ -1,5 +1,6 @@
 # from app.products.access_info import AccessHandler
 from app.concerns.other_concern import handle_exchange_request, handle_feedback, handle_refund_request
+from app.products.delivery_time_estimate import delivery_time_estimate
 from app.products.product_info import handle_prod_info
 from app.products.store_info import handle_store_info
 
@@ -26,9 +27,10 @@ def handle_intent(request):
         response = {"fulfillmentMessages": [{"text": {"text": [handle_refund_request(req["queryResult"]["sentimentAnalysisResult"]["queryTextSentiment"]["score"])]}}]}
     elif(intent == "exchange-request"):
         response = {"fulfillmentMessages": [{"text": {"text": [handle_exchange_request(req["queryResult"]["sentimentAnalysisResult"]["queryTextSentiment"]["score"])]}}]}
-    # # if user asks for directions to store
+    # if user asks for directions to store
     # elif(intent == "access-request"):
-    #     access_handler = AccessHandler()
-    #     access_handler.handle()
-        # self.undetected_intent_count = 0
+    #     response = handle_access_request(req["queryResult"]["queryText"]["parameters"])
+    # if user asks about estimated delivery time
+    elif(intent == "delivery-time-estimate"):
+        response = delivery_time_estimate(req["queryResult"]["parameters"])
     return response
