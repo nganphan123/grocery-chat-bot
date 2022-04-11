@@ -1,5 +1,7 @@
 # Todo list
 TODO.txt
+# Env Var file
+allvars.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
