@@ -22,9 +22,10 @@ The chatbot will do so by doing a basic check of the user input, and redirecting
   * [Product Info API](#product-info-api)
   * [Database API](#database-api)
 * [New Features](#new-features)
-  * [Nutrition Sub-Topic](#nutrition-sub-topic)
-  * [5 Reasonable Responses](#5-reasonable-responses-outside-of-the-topic)
-  * [Spelling Mistakes](#spelling-mistakes)
+  * [User interface](#user-interface)
+  * [Distance Matrix API](#estimated-delivery-time)
+  * [Product carousel](#product-carousel)
+  * [Paypal sandbox](#paypal-checkout)
 
 ## Setup
 
@@ -189,16 +190,16 @@ output = db.get_product("id", "4011")
 ```
 
 ## New Features
-1. User interface
-The chatbot is integrated with Facebook Messenger App so it has a new user interface. User can go to *Seashore seashell* page on Facebook and interact with the chatbot through Messenger.
+#### User interface
+The chatbot is integrated with Facebook Messenger App so it has a new user interface. User can go to *Seashore seashell* page on Facebook and interact with the chatbot through Messenger. With this new UI, it's easier for user to interact with the bot and see media content.
 ![](./snippets/ui.PNG)
-2. Estimated delivery time
+#### Estimated delivery time
 When user asks about estimated delivery time from store to their place, the bot will ask for user address. Then it makes a request to Google Distance Matrix API to get the estimated delivery time.
 ![](./snippets/deliveryTime.PNG)
-3. Product carousel
+#### Product carousel
 On request, the bot will return a carousel of products. Each product will have a button for quick checkout.
 ![](./snippets/carousel.PNG)
-4. Paypal checkout
+#### Paypal checkout
 When user hits ***Checkout*** button, another button for Paypal checkout will be shown.
 ![](./snippets/checkout.PNG)
 
