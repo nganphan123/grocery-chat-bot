@@ -17,3 +17,6 @@ def webhook():
 def order_success():
     # handle payment execute
     return render_template('confirm-payment.html')
+
+if __name__ == '__main__':
+    app.run()
