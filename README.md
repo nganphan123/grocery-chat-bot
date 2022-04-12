@@ -1,10 +1,10 @@
-# grocery-chat-bot
+# Store chat bot
 
-###### An assistant chatbot for a grocery store that helps answer customer queries.
+###### An assistant chatbot for Seashore seashell that helps answer customer queries.
 
 The chatbot will greet the user, then answer their question about store/product information or other, more complex concerns.
 
-The chatbot will do so by doing a basic check of the user input, and redirecting the query to the appropriate mini-bot, where a more in-depth response will be handled. If the bot cannot decipher the user's message, they will be provided with the store's email, phone number, and hours to talk to a real employee.
+The chatbot will do so by doing a basic check of the user input, and redirecting the query to the appropriate mini-bot, where a more in-depth response will be handled.
 
 ## Table of contents
 
@@ -28,29 +28,38 @@ The chatbot will do so by doing a basic check of the user input, and redirecting
 
 ## Setup
 
-The Google cloud key needs to be obtained by contacting `ngan.phan@ubc.ca
-` to run the full bot.
+REQUIREMENTS: Facebook Messenger App, Dialogflow agent, Google API Key, Paypal sandbox
 
-### Windows (PowerShell)
+1. Create Dialogflow agent and connect it to project on Google console.
+Then import the dialogflow-agent.zip to your project. Refer to the first part of this [blog](https://medium.com/janis/a-strategy-for-managing-dialogflow-intents-when-you-want-to-add-context-98665097e758) for more details.
+2. Create a Facebook Messenger App and connect it to the Dialogflow agent. Refer to this [blog](https://medium.com/@kiesp/tutorials-how-to-integrate-dialogflow-with-facebook-messenger-f8b9e9fa6a3e)
+3. On Goolge console, go to your project and enable ***Distance Matrix API*** and create a Google API Key.
+4. Create a Paypal sandbox account and retrieve client_id and secret. Refer to this [blog](https://developer.paypal.com/api/rest/)
+5. Set environment variables.
+
+#### Windows (PowerShell)
 
 Creating virtual environment and install dependencies to run the bot:
-```bash
+**Powershell**
+```powershell 
 python3 -m venv venv
 venv\Scripts\activate
-pip install -r requirements.txt
+$env:API_KEY=<Your key>
+$env:client_id=<Your Paypal client id>
+$env:secret=<Your Paypal secret>
 ```
 
-Setting up the environment variables for the bot (Google cloud key) in PowerShell:
-```bash
-$env:GOOGLE_APPLICATION_CREDENTIALS="KEY_PATH"
-```
-
+**Command Prompt**
 Setting up the environment variables for the bot (Google cloud key) in cmd:
-```bash
-set GOOGLE_APPLICATION_CREDENTIALS=KEY_PATH
+```command prompt
+python3 -m venv venv
+venv\Scripts\activate
+setAPI_KEY=<Your key>
+setclient_id=<Your Paypal client id>
+setsecret=<Your Paypal secret>
 ```
 
-### Unix (Bash)
+#### Unix (Bash)
 
 Creating virtual environment and install dependencies to run the bot:
 
@@ -60,23 +69,25 @@ Creating virtual environment and install dependencies to run the bot:
 
 Setting up the environment variables for the bot (Google cloud key).
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="KEY_PATH"
+export API_KEY=<Your key>
+export client_id=<Your Paypal client id>
+export secret=<Your Paypal secret>
 ```
 
 ## Run
 ```bash
-python3 main.py
+python3 index.py
 ```
 
-## Main Bot
+## Overall chat structure
 
-The main bot will handle all inputs and ouputs from the user.
+Whenever user sends a message on Facebook messenger, a request containing the message will be sent to Dialogflow agent. Intent of the message is detected by the agent. If the intent is *Default Welcome intent* or *Default Fallback Intent*, Dialogflow will handle it itself and respond to Messenger app. Otherwise, Dialogflow sends another request to our webhook server to handle fullfilment.
 
-See in-depth documentation [here](app/greetings/README.md).
+![](https://research.aimultiple.com/wp-content/webp-express/webp-images/uploads/2020/05/dialogflow.png.webp)
 
 ## Product & Store Mini-bots
 
-This mini-bot will handle any question related to product price, stock, nutrition, and store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main bot.
+This mini-bot will handle any question related to product price, stock, and store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main function.
 
 See in-depth documentation [here](app/products/README.md).
 
@@ -178,39 +189,25 @@ output = db.get_product("id", "4011")
 ```
 
 ## New Features
+1. User interface
+The chatbot is integrated with Facebook Messenger App so it has a new user interface. User can go to *Seashore seashell* page on Facebook and interact with the chatbot through Messenger.
+![](./snippets/ui.PNG)
+2. Estimated delivery time
+When user asks about estimated delivery time from store to their place, the bot will ask for user address. Then it makes a request to Google Distance Matrix API to get the estimated delivery time.
+![](./snippets/deliveryTime.PNG)
+3. Product carousel
+On request, the bot will return a carousel of products. Each product will have a button for quick checkout.
+![](./snippets/carousel.PNG)
+4. Paypal checkout
+When user hits ***Checkout*** button, another button for Paypal checkout will be shown.
+![](./snippets/checkout.PNG)
 
-### Nutrition Sub-Topic
+When user hits ***Paypal*** button, they will be directed to Paypal website to complete the payment.
 
-With nutrition sub-topic, the bot will also provide nutrition information for the product, which will help user decide whether to buy the product or not.
+![](./snippets/signInPaypal.PNG)
 
-![nutrition-snippet](snippets/subtopic.PNG)
+![](./snippets/authorizationPaypal.PNG)
 
-### 5 Reasonable responses outside of the topic
+After completing authorization step, the user will be directed to confirmation website. This completes the payment process.
 
-With 5 reasonable responses outside of the topic, the bot will provide a more fluent response to the user. This will prompt the user to rephrase their question if the bot does not understand the question. The bot also provides responses for refunds or exchanges for the product, which allows for more smooth and realistic conversation.
-
-![response-snippet](snippets/5responses.PNG)
-
-### Spelling Mistakes
-
-With spelling mistakes handled by Google's Diagflow API, the bot will provide a more accurate response to the user.
-
-![correcttion-snippet](snippets/mistakes.PNG)
-
-### Synonym Recognition
-
-With synonym recognition handled by Google's Diagflow API, the bot will provide a more accurate response to the user.
-
-![correcttion-snippet](snippets/synonym.PNG)
-
-### Named Entity Recognition
-
-With Named Entity Recognition handled by Google's Diagflow API, the bot will provide a more accurate response to the user.
-
-![correcttion-snippet](snippets/entity.PNG)
-
-### Sentiment Analysis
-
-With Sentiment Analysis handled by Google's Diagflow API, the bot will provide a more accurate response to the user.
-
-![correcttion-snippet](snippets/sentiment.PNG)
+![](./snippets/confirmationPaypal.PNG)

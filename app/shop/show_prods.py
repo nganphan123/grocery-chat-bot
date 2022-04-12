@@ -22,7 +22,7 @@ def show_prods():
                                     "buttons":[
                                     {
                                         "type":"postback",
-                                        "title":"Checkout",
+                                        "title":"Buy Now",
                                         "payload":"trigger checkout"
                                     }          
                                     ]      
@@ -34,7 +34,7 @@ def show_prods():
                                     "buttons":[
                                     {
                                         "type":"postback",
-                                        "title":"Checkout",
+                                        "title":"Buy Now",
                                         "payload":"trigger checkout"
                                     }          
                                     ]      
