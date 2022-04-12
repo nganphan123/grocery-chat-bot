@@ -3,7 +3,9 @@ from .delivery_time_estimate import(
 )
 
 from .other_concern import(
-    other_concern
+    handle_feedback,
+    handle_exchange_request,
+    handle_refund_request
 )
 
 from .show_prods import(
@@ -11,5 +13,5 @@ from .show_prods import(
 )
 
 from .store_info import(
-    store_info
+    handle_store_info
 )

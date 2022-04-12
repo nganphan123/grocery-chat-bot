@@ -24,11 +24,11 @@ MOCK_PRODUCT_DATA = [
 
 
 STORE_INFO = {
-    "name": "Walmart",
-    "address": "123 Main Street, Toronto, ON, Canada",
-    "city": "Toronto",
-    "province": "ON",
-    "postal_code": "M5V 2K7",
+    "name": "Seashore seashell",
+    "address": "1555 Banks Rd, Kelowna, BC, Canada",
+    "city": "Kelowna",
+    "province": "BC",
+    "postal_code": "V1X 7Y8",
     "country": "Canada",
     "phone": "416-555-1234",
     "website": "https://www.walmart.ca",

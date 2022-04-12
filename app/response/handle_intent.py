@@ -1,7 +1,7 @@
 # from app.products.access_info import AccessHandler
 from app.shop import *
 from app.checkout import *
-from products import *
+from app.products import *
 
 def handle_intent(request):
     """
