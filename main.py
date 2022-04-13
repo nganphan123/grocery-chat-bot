@@ -1,4 +1,3 @@
-from urllib import response
 from flask import Flask, render_template, request
 
 from app.response.handle_intent import handle_intent
