@@ -12,7 +12,7 @@ The chatbot will do so by doing a basic check of the user input, and redirecting
   * [Windows](#windows-powershell)
   * [Unix](#unix-bash)
   * [Run Bot](#run)
-* [Main Bot (input/output)](#main-bot)
+* [Overall chat structure](#overall-chat-structure)
 * [Mini Bots (products & store information)](#product--store-mini-bots)
 * [Tests](#tests)
   * [All cases](#test-all-cases)
@@ -38,9 +38,9 @@ Then import the dialogflow-agent.zip to your project. Refer to the first part of
 4. Create a Paypal sandbox account and retrieve client_id and secret. Refer to this [blog](https://developer.paypal.com/api/rest/)
 5. Set environment variables.
 
-#### Windows (PowerShell)
+### Environment variables
+#### Windows
 
-Creating virtual environment and install dependencies to run the bot:
 **Powershell**
 ```powershell 
 python3 -m venv venv
@@ -51,42 +51,35 @@ $env:secret=<Your Paypal secret>
 ```
 
 **Command Prompt**
-Setting up the environment variables for the bot (Google cloud key) in cmd:
 ```command prompt
 python3 -m venv venv
 venv\Scripts\activate
 setAPI_KEY=<Your key>
 setclient_id=<Your Paypal client id>
-setsecret=<Your Paypal secret>
+setsecret=<Your Paypal client secret>
 ```
 
 #### Unix (Bash)
 
-Creating virtual environment and install dependencies to run the bot:
-
 ```bash
 ./install.sh
-```
-
-Setting up the environment variables for the bot (Google cloud key).
-```bash
 export API_KEY=<Your key>
 export client_id=<Your Paypal client id>
 export secret=<Your Paypal secret>
 ```
 
-## Run
+### Run
 ```bash
 python3 index.py
 ```
 
 ## Overall chat structure
 
-Whenever user sends a message on Facebook messenger, a request containing the message will be sent to Dialogflow agent. Intent of the message is detected by the agent. If the intent is *Default Welcome intent* or *Default Fallback Intent*, Dialogflow will handle it itself and respond to Messenger app. Otherwise, Dialogflow sends another request to our webhook server to handle fullfilment.
+Whenever user sends a message on Facebook messenger, a request containing the message will be sent to Dialogflow agent. Intent of the message is detected by the agent. If the intent is *Default Welcome intent* or *Default Fallback Intent*, Dialogflow will handle it itself and respond to Messenger app. Otherwise, Dialogflow sends another request to our web server to handle fullfilment.
 
 ![](https://research.aimultiple.com/wp-content/webp-express/webp-images/uploads/2020/05/dialogflow.png.webp)
 
-## Product & Store Mini-bots
+### Product & Store Mini-bots
 
 This mini-bot will handle any question related to product price, stock, and store information. The bot first determines what topic is of interest (product or store information) and breaks the user's message down into keywords. The bot then compares these words and checks them in order to create the most appropriate response, and returns the response to the main function.
 
