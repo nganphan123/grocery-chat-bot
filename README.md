@@ -86,6 +86,9 @@ This mini-bot will handle any question related to product price, stock, and stor
 See in-depth documentation [here](app/products/README.md).
 
 ## Tests
+
+***Disclaimer: Due to new updates, this old tests are currently not working***
+
 We are using `pytest` for all of our tests. Our test cases can be found in the `test` folder.
 
 ### Test all cases:
@@ -105,6 +108,7 @@ python -m pytest -v -m <selected case>
 ```
 
 ## API
+
 You can call the API from any other Python script to check store's information or products information. This does not require the bot to be running or a diagflow key.
 
 **Make sure to import the API correctly, as the API is not imported by default, and is dependent on your project's file hierarchy.**
@@ -113,24 +117,25 @@ You can call the API from any other Python script to check store's information o
 
 From this bot you can query the store's information.
 
-`Example import for product info bot:`
+`Example import for store info method:`
+
 ```console
-from app.products.store_info import StoreInfoHandler
+from app.shop.store_info import *
 ```
 
-`handle(string) -> string`
+`handle_store_info(string) -> string`
+
 ```console
-StoreHandler = StoreInfoHandler()
 message = "Where is the store?"
-output = StoreHandler.handle(message)
+output = handle_store_info(message)
 # returns string: "It is 123 Main St"
 ```
 
 `parse(string) -> object`
+
 ```console
-StoreHandler = StoreInfoHandler()
 message = "Where is the store?"
-print(StoreHandler.parse(message))
+print(parse(message))
 # returns object: {'request': 'address'}
 ```
 
@@ -139,24 +144,17 @@ print(StoreHandler.parse(message))
 From this bot you can query the store's products information.
 
 `Example import for product info bot:`
+
 ```console
-from app.products.product_info import ProductInfoHandler
+from app.products.product_info import handle_product_info
 ```
 
-`handle(string) -> string`
+`handle_product_info(string) -> string`
+
 ```console
-StoreHandler = ProductInfoHandler()
 message = "How much does a banana cost?"
-output = StoreHandler.handle(message)
+output = handle_product_info(message)
 # returns string: "Bananas cost $0.67 per kg."
-```
-
-`parse(string) -> object`
-```console
-StoreHandler = ProductInfoHandler()
-message = "How much does a banana cost?"
-output = StoreHandler.parse(message)
-# returns object: {'request': 'price', 'id': '4011'}
 ```
 
 ### Database API
@@ -168,6 +166,7 @@ from app.database import Database
 ```
 
 `Database lifecycle:`
+
 ```console
 db = Database.instance()
 db.connect()
@@ -177,6 +176,7 @@ db.close()
 ```
 
 `get_product("id", str) -> List`
+
 ```
 output = db.get_product("id", "4011")
 # returns list: [OrderedDict([('id', '4011'), ('name', 'banana'), ('names', 'bananas'), ('price', 0.67), ('price_scale', 'per kg'), ('in_stock', True), ('calories', 89), ('protein', '1.1 g'), ('carbs', '22.8 g'), ('sugar', '12.2 g'), ('fat', '0.3 g')])]
