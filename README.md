@@ -1,8 +1,5 @@
 # Store chat bot
 
-Visit this link to chat with the bot:
-https://www.facebook.com/Seashore-seashell-103927852293376
-
 ###### An assistant chatbot for Seashore seashell that helps answer customer queries.
 
 The chatbot will greet the user, then answer their question about store/product information or other, more complex concerns.
